@@ -2,15 +2,25 @@
 
 module Main (main) where
 
+import Data.Map (Map)
+import qualified Data.Map as Map
+import Data.Map.Internal.Debug as MapDebug
 import Data.Text
 import Data.Time
 import Lib
 
 main :: IO ()
 main = do
+  let myMap = Map.empty
   a <- getTodaysDate
-  b <- decrypt a a
-  print b
+  let myMap2 = Map.insert "Four" a myMap
+  let key = Map.lookup "Four" myMap2
+  case key of
+    Just w -> do
+      print w
+      b <- decrypt a w
+      print b
+    Nothing -> print "fuckk"
 
 decrypt :: Day -> Day -> IO (Maybe Text)
 decrypt inDate date
@@ -21,8 +31,7 @@ decrypt inDate date
       return Nothing
 
 encrypt :: Day -> FilePath -> IO ()
-encrypt a b = print b 
-
+encrypt a b = print b
 
 getTodaysDate :: IO Day
 getTodaysDate = getZonedTime >>= return . utctDay . zonedTimeToUTC
